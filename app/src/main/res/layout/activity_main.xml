@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- الخلفية (الصورة اللي إنت بعتها) -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_image"
+        android:scaleType="centerCrop"
+        android:alpha="0.3" />
+
+    <!-- المحتوى -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="قاتل الشبكة"
+            android:textColor="#FF0000"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:shadowColor="#000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="5"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="أداة اختراق شبكات الواي فاي"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginBottom="40dp"/>
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:text="بدء الاختراق"
+            android:backgroundTint="#8B0000"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="جاهز للاختراق..."
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="30dp"/>
+
+    </LinearLayout>
+</RelativeLayout>
