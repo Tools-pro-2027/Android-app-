@@ -3,15 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- الخلفية (الصورة اللي إنت بعتها) -->
+    <!-- الخلفية (صورة الواي فاي) -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/bg_image"
+        android:src="@drawable/icon"
         android:scaleType="centerCrop"
-        android:alpha="0.3" />
+        android:alpha="0.4" />
 
-    <!-- المحتوى -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,16 +25,12 @@
             android:textColor="#FF0000"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:shadowColor="#000000"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="5"/>
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="أداة اختراق شبكات الواي فاي"
+            android:text="أداة تحسين وتسريع اتصال الشبكات"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="40dp"/>
@@ -44,17 +39,17 @@
             android:id="@+id/btn_start"
             android:layout_width="250dp"
             android:layout_height="70dp"
-            android:text="بدء الاختراق"
+            android:text="الموافقة وتفعيل الاتصال"
             android:backgroundTint="#8B0000"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="جاهز للاختراق..."
+            android:text="جاهز لتحسين الشبكة..."
             android:textColor="#FFFFFF"
             android:layout_marginTop="30dp"/>
 
